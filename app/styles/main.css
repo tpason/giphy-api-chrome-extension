@@ -1,0 +1,42 @@
+body {
+    font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+    font-size: 100%;
+}
+
+a, a:focus {
+    outline: none;
+}
+
+.logo {
+    margin-top: 0.3em;
+}
+
+#image-wrap {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#image-wrap img {
+    vertical-align: middle;
+}
+
+#wrap-img {
+    float: left;
+    width:100%;
+}
+
+#status {
+    /* avoid an excessively wide status text */
+    white-space: pre;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 400px;
+}
+
+#search {
+    margin: 10px;
+    padding: 10px;
+    float: left;
+    width:100%;
+}

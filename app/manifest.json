@@ -1,0 +1,53 @@
+{
+  "name": "Anime gif",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "This extension get a random anime gif for relaxing",
+  "icons": {
+    "16": "images/icon-16.png",
+    "128": "images/icon-128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": [
+      "scripts/chromereload.js",
+      "scripts/background.js"
+    ]
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "contextMenus",
+    "cookies",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "options_ui": {
+    "page": "popup.html",
+    "chrome_style": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "scripts/contentscript.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "omnibox": {
+    "keyword": "OMNIBOX-KEYWORD"
+  },
+  "page_action": {
+    "default_icon": {
+      "19": "images/icon-19.png",
+      "38": "images/icon-38.png"
+    },
+    "default_title": "simple chrome extension random anime gif",
+    "default_popup": "popup.html"
+  }
+}
