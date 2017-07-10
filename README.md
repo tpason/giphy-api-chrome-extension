@@ -1,0 +1,1 @@
+# giphy-api-chrome-extension
