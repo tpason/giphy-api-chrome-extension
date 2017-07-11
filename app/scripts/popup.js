@@ -5,37 +5,78 @@ function renderStatus(statusText) {
 }
 
 function renderImage(imageData, keySearch) {
-  document.getElementById('image-wrap').href = imageData.url;
-  document.getElementById('image').src = imageData.fixed_height_downsampled_url;
-  renderButton(imageData, keySearch);
-  // img-random
+  if (imageData != '') {
+    document.getElementById('image-wrap').href = imageData.url;
+    document.getElementById('image').src = imageData.fixed_height_downsampled_url;
+    debounce(renderButton(imageData, keySearch), 500);
+  } else {
+    document.getElementById('image-wrap').href = 'javascript:void(0)';
+    document.getElementById('image').src = '/images/404.gif';
+
+    // remove all child elements
+    var list = document.getElementsByClassName("wrap-img");
+    for (var i = list.length - 1; 0 <= i; i--) {
+      if (list[i] && list[i].parentElement) {
+        list[i].parentElement.removeChild(list[i]);
+      }
+    }
+  }
 }
-// arrows.png
 
 function renderButton(imageData, keySearch) {
   var searchName = document.getElementById("search-name");
-  searchName.setAttribute('href', imageData.fixed_height_downsampled_url);
+  if (searchName === null) {
+    var list = document.createElement("div");
+    list.setAttribute('class', 'wrap-img');
+    document.body.appendChild(list);
+    searchName = document.createElement("a");
+    searchName.setAttribute('id', 'search-name');
+    list.appendChild(searchName);
+  }
+  searchName.setAttribute('href', imageData.fixed_width_downsampled_url);
   searchName.setAttribute('download', '');
+
   //download
   var imageDownload = document.getElementById("img-search");
-  imageDownload.src = '/images/freepik.jpg';
-  imageDownload.width = '50';
-  imageDownload.height = '50';
-  imageDownload.alt = 'Downloads';
-  //random iamge
+  if (imageDownload === null) {
+    imageDownload = document.createElement("IMG");
+    imageDownload.setAttribute('id', 'img-search');
+    imageDownload.src = '/images/freepik.jpg';
+    imageDownload.width = '50';
+    imageDownload.height = '50';
+    imageDownload.alt = 'Downloads';
+    var searchName = document.getElementById("search-name");
+    searchName.appendChild(imageDownload);
+  }
+  //random image
   var imageRandom = document.getElementById("img-random");
-  imageRandom.src = '/images/arrows.png';
-  imageRandom.width = '50';
-  imageRandom.height = '50';
-  imageRandom.alt = 'Random images';
+  if (imageRandom === null) {
+    imageRandom = document.createElement("IMG");
+    imageRandom.setAttribute('id', 'img-random');
+    imageRandom.src = '/images/arrows.png';
+    imageRandom.width = '50';
+    imageRandom.height = '50';
+    imageRandom.alt = 'Random images';
+    list.appendChild(imageRandom);
+    debounce(imageRandom.addEventListener("click", async function () {
+      clickRandom(imageRandom);
+    }), 500);
+  }
   imageRandom.setAttribute('keySearch', keySearch);
+}
+async function clickRandom(imageRandom) {
+  var keySearch = imageRandom.getAttribute('keySearch');
+  console.log(keySearch);
+  renderStatus('Loading ...');
+  await getTagsUrl(keySearch);
+  renderStatus('');
 }
 
 async function getTagsUrl(keySearch = 'troll+meme') {
   let url = 'https://api.giphy.com/v1/gifs/random?api_key=710f1da57c7e48d9a0f2331709ceb279&tag=' + keySearch;
   let result = await fetch(url);
   let jsonResult = await result.json();
-  renderImage(jsonResult.data, keySearch);
+  renderImage(jsonResult.data, keySearch)
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -79,12 +120,10 @@ document.getElementById("search").onkeypress = debounce(async function () {
   renderStatus('');
 }, 500);
 
-var imgRandom = document.getElementById("img-random");
-imgRandom.addEventListener("click", async function () {
-  var keySearch = imgRandom.getAttribute('keySearch');
-  console.log(keySearch);
-  renderStatus('Loading ...');
-  await getTagsUrl(keySearch);
-  renderStatus('');
+document.addEventListener('DOMContentLoaded', async () => {
+  var imageRandom = document.getElementById("img-random");
+  //event click random gif
+  debounce(imageRandom.addEventListener("click", async function () {
+    clickRandom(imageRandom);
+  }), 500);
 });
-
